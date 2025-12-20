@@ -52,7 +52,7 @@
 
         @keyframes rotateSystem {
             from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            to { transform: rotate(180deg); }
         }
 
         /* --- 四个方位字母 (S E N W) 的通用样式 --- */
@@ -83,7 +83,7 @@
 
         /* --- 字母位置关键帧 --- */
         .letter-up { 
-            top: 42%; 
+            top: 50%; 
             left: 50%;
             animation-name: moveN; 
         }
@@ -92,7 +92,7 @@
         }
 
         .letter-down { 
-            top: 58%; 
+            top: 65%; 
             left: 50%;
             animation-name: moveS; 
         }
@@ -102,7 +102,7 @@
 
         .letter-left { 
             top: 50%; 
-            left: 42%;
+            left: 50%;
             animation-name: moveW; 
         }
         @keyframes moveW {
@@ -111,7 +111,7 @@
 
         .letter-right { 
             top: 50%; 
-            left: 58%;
+            left: 65%;
             animation-name: moveE; 
         }
         @keyframes moveE {
