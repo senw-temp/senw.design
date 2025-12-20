@@ -2,55 +2,86 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SENW</title>
     <style>
-        /* CSS 样式：保持极简和全屏居中 */
+        /* --- 基础设置 --- */
         body, html {
             height: 100%;
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+            /* 统一字体为 Helvetica */
+            font-family: "Helvetica", "Arial", sans-serif;
             background-color: #f4f4f4;
             color: #333;
+            overflow: hidden;
         }
 
-        .full-screen-center {
+        /* 最外层的大容器 */
+        .full-screen-wrapper {
             display: flex;
-            flex-direction: column; /* 垂直排列 */
             justify-content: center;
             align-items: center;
             height: 100vh;
             width: 100%;
+        }
+
+        /* --- 核心罗盘容器 --- */
+        .compass-container {
+            position: relative;
+            padding: 80px; 
             text-align: center;
         }
 
-        .section {
-            margin-bottom: 60px; /* 两个板块之间的距离 */
+        /* --- 四个方位字母 (S E N W) --- */
+        .compass-letter {
+            position: absolute;
+            font-weight: bold;  /* 粗体 */
+            font-size: 3rem;    /* 特大号字体 */
+            color: #ccc;        /* 保持浅灰色 */
+            line-height: 1;
+            user-select: none;
         }
 
+        /* 定位调整 */
+        .letter-up { top: 0; left: 50%; transform: translateX(-50%); }
+        .letter-down { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .letter-left { left: 0; top: 50%; transform: translateY(-50%); }
+        .letter-right { right: 0; top: 50%; transform: translateY(-50%); }
+
+        /* --- 中间正文内容 --- */
+        .content-section {
+            margin-bottom: 50px;
+        }
+        .content-section:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 标题: Here you are / Where are we */
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: bold; /* 粗体 */
             color: #000;
         }
 
+        /* 正文: 坐标 / 邮箱 */
         p {
-            font-size: 1.1rem;
-            font-family: 'Courier New', Courier, monospace; /* 使用打字机字体显示数据，更有科技感 */
+            font-size: 1rem;
+            font-weight: normal; /* 常规体 */
             color: #666;
             margin: 0;
+            line-height: 1.6; /* 稍微增加行高，让三个邮箱排列不那么拥挤 */
         }
 
+        /* 链接样式 */
         a {
             color: #666;
             text-decoration: none;
-            border-bottom: 1px solid #999;
-            transition: color 0.3s;
+            border-bottom: 1px solid #ccc;
+            transition: all 0.3s;
         }
-
         a:hover {
             color: #000;
             border-bottom-color: #000;
@@ -59,66 +90,58 @@
 </head>
 <body>
 
-    <div class="full-screen-center">
-        
-        <div class="section">
-            <h1>Here you are</h1>
-            <p id="location-display">Locating...</p>
-        </div>
+    <div class="full-screen-wrapper">
+        <div class="compass-container">
 
-        <div class="section">
-            <h1>Where are we</h1>
-            <p><a href="mailto:info@senw.design">info@senw.design</a></p>
-        </div>
+            <div class="compass-letter letter-up">S</div>
+            <div class="compass-letter letter-down">N</div>
+            <div class="compass-letter letter-left">W</div>
+            <div class="compass-letter letter-right">E</div>
 
+            <div class="main-content">
+                <div class="content-section">
+                    <h1>Here you are</h1>
+                    <p id="location-display">Locating...</p>
+                </div>
+
+                <div class="content-section">
+                    <h1>Where are we</h1>
+                    <p><a href="mailto:benberlee@senw.design">benberlee@senw.design</a></p>
+                    <p><a href="mailto:shoupeng.zhu@senw.design">shoupeng.zhu@senw.design</a></p>
+                    <p><a href="mailto:jinbao@senw.design">jinbao@senw.design</a></p>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script>
-        // 获取页面上的显示元素
         const displayElement = document.getElementById("location-display");
 
-        // 成功获取位置时的处理函数
         function showPosition(position) {
-            // 获取纬度和经度
             let lat = position.coords.latitude;
             let long = position.coords.longitude;
-
-            // 判断 N/S (北/南)
             let latDir = lat >= 0 ? 'N' : 'S';
-            // 判断 E/W (东/西)
             let longDir = long >= 0 ? 'E' : 'W';
-
-            // 格式化数字，保留4位小数 (例如 121.5342)
             let latText = Math.abs(lat).toFixed(4);
             let longText = Math.abs(long).toFixed(4);
-
-            // 拼接显示的文字：经度在前，纬度在后 (遵循你的要求)
-            // 格式：121.5342° E, 25.0342° N
-            displayElement.innerHTML = `${longText}° ${longDir}, ${latText}° ${latDir}`;
+            
+            displayElement.innerHTML = `${longText}° ${longDir}<br>${latText}° ${latDir}`;
         }
 
-        // 获取失败时的处理函数 (比如用户拒绝了权限)
         function showError(error) {
             switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    displayElement.innerHTML = "Permission Denied";
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    displayElement.innerHTML = "Location Unavailable";
-                    break;
-                case error.TIMEOUT:
-                    displayElement.innerHTML = "Request Timeout";
-                    break;
-                default:
-                    displayElement.innerHTML = "Unknown Error";
+                case error.PERMISSION_DENIED: displayElement.innerHTML = "Permission Denied"; break;
+                case error.POSITION_UNAVAILABLE: displayElement.innerHTML = "Location Unavailable"; break;
+                case error.TIMEOUT: displayElement.innerHTML = "Request Timeout"; break;
+                default: displayElement.innerHTML = "Unknown Error";
             }
         }
 
-        // 开始请求位置
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition, showError);
         } else {
-            displayElement.innerHTML = "Geolocation is not supported by this browser.";
+            displayElement.innerHTML = "Geolocation not supported.";
         }
     </script>
 
