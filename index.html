@@ -9,10 +9,10 @@
         body, html {
             height: 100%;
             margin: 0;
-            /* 统一字体为 Helvetica */
             font-family: "Helvetica", "Arial", sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            /* 背景改为纯白，为了配合反色效果 */
+            background-color: #ffffff;
+            color: #000; /* 正文文字黑色 */
             overflow: hidden;
         }
 
@@ -28,63 +28,126 @@
         /* --- 核心罗盘容器 --- */
         .compass-container {
             position: relative;
-            padding: 80px; 
+            /* 增加内边距，确保字母飞到边缘时不会紧贴着浏览器窗口 */
+            padding: 100px; 
             text-align: center;
         }
 
-        /* --- 四个方位字母 (S E N W) --- */
+        /* --- 四个方位字母 (S E N W) 的通用样式 --- */
         .compass-letter {
             position: absolute;
-            font-weight: bold;  /* 粗体 */
-            font-size: 3rem;    /* 特大号字体 */
-            color: #ccc;        /* 保持浅灰色 */
+            font-weight: bold;
+            font-size: 4rem; /* 稍微加大一点字号，增强视觉冲击力 */
             line-height: 1;
             user-select: none;
+            /* 确保字母在最上层 */
+            z-index: 10;
+            /* 【核心代码】差值混合模式：实现交叉反色效果 */
+            mix-blend-mode: difference;
+            /* 字母颜色设为白色：在白色背景上反色显现为黑色，遇到黑色文字反色为白色 */
+            color: #ffffff;
+            /* 防止字母挡住底下邮箱链接的点击 */
+            pointer-events: none;
+
+            /* --- 动画初始状态：居中 --- */
+            top: 50%;
+            left: 50%;
+            /* 初始位置居中，且初始角度为0 */
+            transform: translate(-50%, -50%) rotate(0deg);
+
+            /* --- 动画设置 --- */
+            /* 动画时长 3秒，使用平滑的缓动曲线 */
+            animation-duration: 3s;
+            animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1); /* 这种曲线有一点“弹射”出去的感觉 */
+            /* 动画结束后停留在最后一帧的状态 */
+            animation-fill-mode: forwards;
+            /* 延迟 0.5秒开始动画，让用户先看一眼居中状态 */
+            animation-delay: 0.5s;
         }
 
-        /* 定位调整 */
-        .letter-up { top: 0; left: 50%; transform: translateX(-50%); }
-        .letter-down { bottom: 0; left: 50%; transform: translateX(-50%); }
-        .letter-left { left: 0; top: 50%; transform: translateY(-50%); }
-        .letter-right { right: 0; top: 50%; transform: translateY(-50%); }
+        /* --- 定义四个字母各自的动画关键帧 --- */
 
-        /* --- 中间正文内容 --- */
+        /* 北 N：向上飞，同时逆时针旋转360度 */
+        .letter-up { animation-name: moveN; }
+        @keyframes moveN {
+            to {
+                top: 0; /* 最终位置：顶部边界 */
+                left: 50%;
+                /* translateX用于水平居中校正，rotate(-360deg)用于逆时针旋转一圈 */
+                transform: translateX(-50%) rotate(-360deg);
+            }
+        }
+
+        /* 南 S：向下飞，同时逆时针旋转360度 */
+        .letter-down { animation-name: moveS; }
+        @keyframes moveS {
+            to {
+                top: auto; /* 必须清除 top 属性 */
+                bottom: 0; /* 最终位置：底部边界 */
+                left: 50%;
+                transform: translateX(-50%) rotate(-360deg);
+            }
+        }
+
+        /* 西 W：向左飞，同时逆时针旋转360度 */
+        .letter-left { animation-name: moveW; }
+        @keyframes moveW {
+            to {
+                left: 0; /* 最终位置：左侧边界 */
+                top: 50%;
+                transform: translateY(-50%) rotate(-360deg);
+            }
+        }
+
+        /* 东 E：向右飞，同时逆时针旋转360度 */
+        .letter-right { animation-name: moveE; }
+        @keyframes moveE {
+            to {
+                left: auto; /* 必须清除 left 属性 */
+                right: 0; /* 最终位置：右侧边界 */
+                top: 50%;
+                transform: translateY(-50%) rotate(-360deg);
+            }
+        }
+
+
+        /* --- 中间正文内容样式 (微调) --- */
         .content-section {
-            margin-bottom: 50px;
+            margin-bottom: 60px;
+            /* 确保正文在字母图层下方 */
+            z-index: 1;
+            position: relative;
         }
         .content-section:last-child {
             margin-bottom: 0;
         }
 
-        /* 标题: Here you are / Where are we */
         h1 {
             font-size: 1.2rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 8px;
-            font-weight: bold; /* 粗体 */
-            color: #000;
+            margin-bottom: 15px;
+            font-weight: bold;
         }
 
-        /* 正文: 坐标 / 邮箱 */
         p {
-            font-size: 1rem;
-            font-weight: normal; /* 常规体 */
-            color: #666;
+            font-size: 1.1rem;
+            font-weight: normal;
             margin: 0;
-            line-height: 1.6; /* 稍微增加行高，让三个邮箱排列不那么拥挤 */
+            line-height: 1.8;
         }
 
-        /* 链接样式 */
         a {
-            color: #666;
+            color: #000; /* 链接颜色改为黑色 */
             text-decoration: none;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid #000;
             transition: all 0.3s;
+            /* 确保链接可以点击 */
+            position: relative;
+            z-index: 5;
         }
         a:hover {
-            color: #000;
-            border-bottom-color: #000;
+            opacity: 0.6;
         }
     </style>
 </head>
@@ -93,8 +156,8 @@
     <div class="full-screen-wrapper">
         <div class="compass-container">
 
-            <div class="compass-letter letter-up">S</div>
-            <div class="compass-letter letter-down">N</div>
+            <div class="compass-letter letter-up">N</div>
+            <div class="compass-letter letter-down">S</div>
             <div class="compass-letter letter-left">W</div>
             <div class="compass-letter letter-right">E</div>
 
