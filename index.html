@@ -10,9 +10,9 @@
             height: 100%;
             margin: 0;
             font-family: "Helvetica", "Arial", sans-serif;
-            /* 背景纯白 */
+            /* 背景必须是纯白，作为混合基底 */
             background-color: #ffffff;
-            color: #000;
+            color: #000; 
             overflow: hidden;
         }
 
@@ -23,18 +23,36 @@
             align-items: center;
             height: 100vh;
             width: 100%;
+            background-color: #ffffff;
         }
 
         /* --- 核心罗盘容器 --- */
         .compass-container {
             position: relative;
-            /* 容器大小定义，确保动画范围适中 */
             width: 80vmin; 
             height: 80vmin;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
+        }
+
+        /* --- 字母旋转包裹层 --- */
+        .letters-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            /* 修改：层级调低，放在文字下面 */
+            z-index: 1; 
+            animation: rotateSystem 20s linear infinite;
+        }
+
+        @keyframes rotateSystem {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* --- 四个方位字母 (S E N W) 的通用样式 --- */
@@ -44,84 +62,84 @@
             font-size: 4rem;
             line-height: 1;
             user-select: none;
-            z-index: 10;
             
-            /* 差值混合模式：造就黑白反色效果 */
-            mix-blend-mode: difference;
-            color: #ffffff;
+            /* 修改：
+               1. 颜色改为纯黑，保证视觉强度。
+               2. 移除混合模式，因为我们改用文字去混合字母。
+            */
+            color: #000000; 
+            mix-blend-mode: normal;
+            
             pointer-events: none;
+            transform: translate(-50%, -50%);
 
-            /* --- 动画初始状态：居中 --- */
-            top: 50%;
+            /* --- 直线飞行动画设置 --- */
+            animation-duration: 5s;
+            animation-timing-function: ease-in-out; 
+            animation-iteration-count: infinite; 
+            animation-direction: alternate;
+            animation-delay: 0s;
+        }
+
+        /* --- 字母位置关键帧 --- */
+        .letter-up { 
+            top: 42%; 
             left: 50%;
-            transform: translate(-50%, -50%) rotate(0deg);
-
-            /* --- 动画设置 (核心修改部分) --- */
-            animation-duration: 4s; /* 稍微放慢一点，让往复运动更优雅 */
-            animation-timing-function: ease-in-out; /* 使用缓入缓出，让折返动作更平滑 */
-            animation-iteration-count: infinite; /* 无限循环 */
-            animation-direction: alternate; /* 关键：交替反向播放（去 -> 回 -> 去...） */
-            animation-delay: 0s; /* 立即开始，或者你可以设置延迟 */
+            animation-name: moveN; 
         }
-
-        /* --- 定义四个字母各自的动画关键帧 --- */
-        /* 使用 alternate 后，只需要定义“终点”状态，浏览器会自动处理“回程” */
-
-        /* 北 N：向上飞 */
-        .letter-up { animation-name: moveN; }
         @keyframes moveN {
-            to {
-                top: 5%; /* 飞到距离顶部 5% 的位置 */
-                left: 50%;
-                /* 稍微旋转一下增加动感，如果想要完全直线不旋转，把 rotate 去掉即可 */
-                transform: translate(-50%, -50%) rotate(-180deg); 
-            }
+            to { top: 5%; left: 50%; transform: translate(-50%, -50%); }
         }
 
-        /* 南 S：向下飞 */
-        .letter-down { animation-name: moveS; }
+        .letter-down { 
+            top: 58%; 
+            left: 50%;
+            animation-name: moveS; 
+        }
         @keyframes moveS {
-            to {
-                top: 95%; /* 飞到距离顶部 95% (即底部 5%) 的位置 */
-                left: 50%;
-                transform: translate(-50%, -50%) rotate(-180deg);
-            }
+            to { top: 95%; left: 50%; transform: translate(-50%, -50%); }
         }
 
-        /* 西 W：向左飞 */
-        .letter-left { animation-name: moveW; }
+        .letter-left { 
+            top: 50%; 
+            left: 42%;
+            animation-name: moveW; 
+        }
         @keyframes moveW {
-            to {
-                left: 5%; /* 飞到左侧 5% */
-                top: 50%;
-                transform: translate(-50%, -50%) rotate(-180deg);
-            }
+            to { left: 5%; top: 50%; transform: translate(-50%, -50%); }
         }
 
-        /* 东 E：向右飞 */
-        .letter-right { animation-name: moveE; }
+        .letter-right { 
+            top: 50%; 
+            left: 58%;
+            animation-name: moveE; 
+        }
         @keyframes moveE {
-            to {
-                left: 95%; /* 飞到右侧 95% */
-                top: 50%;
-                transform: translate(-50%, -50%) rotate(-180deg);
-            }
+            to { left: 95%; top: 50%; transform: translate(-50%, -50%); }
         }
 
 
         /* --- 中间正文内容样式 --- */
         .main-content {
-            z-index: 1;
+            /* 修改：
+               1. 层级调高，放在字母上面。
+               2. 颜色改为白色。
+               3. 开启差值模式。
+            */
+            z-index: 10;
             position: relative;
-            /* 确保内容在视觉中心 */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            max-width: 80%;
+            
+            color: #ffffff; /* 白字 */
+            mix-blend-mode: difference; /* 关键：白字 - 白底 = 黑字；白字 - 黑字母 = 白字 */
         }
 
         .content-section {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
         .content-section:last-child {
             margin-bottom: 0;
@@ -141,14 +159,15 @@
             line-height: 1.6;
         }
 
+        /* 链接也需要改为白色，以便参与混合计算 */
         a {
-            color: #000;
+            color: #ffffff;
             text-decoration: none;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid #ffffff;
             transition: opacity 0.3s;
             position: relative;
             z-index: 5;
-            cursor: pointer; /* 确保鼠标变成手型 */
+            cursor: pointer;
         }
         a:hover {
             opacity: 0.6;
@@ -160,11 +179,15 @@
     <div class="full-screen-wrapper">
         <div class="compass-container">
 
-            <div class="compass-letter letter-up">N</div>
-            <div class="compass-letter letter-down">S</div>
-            <div class="compass-letter letter-left">W</div>
-            <div class="compass-letter letter-right">E</div>
+            <!-- 字母在下层 (z-index: 1)，黑色 -->
+            <div class="letters-wrapper">
+                <div class="compass-letter letter-up">N</div>
+                <div class="compass-letter letter-down">S</div>
+                <div class="compass-letter letter-left">W</div>
+                <div class="compass-letter letter-right">E</div>
+            </div>
 
+            <!-- 文字在上层 (z-index: 10)，白色 + 差值模式 -->
             <div class="main-content">
                 <div class="content-section">
                     <h1>Here you are</h1>
@@ -184,13 +207,13 @@
 
     <script>
         const displayElement = document.getElementById("location-display");
-
+        
         function showPosition(position) {
             let lat = position.coords.latitude;
             let long = position.coords.longitude;
+            
             let latDir = lat >= 0 ? 'N' : 'S';
             let longDir = long >= 0 ? 'E' : 'W';
-            // 使用 toFixed(4) 保留4位小数
             let latText = Math.abs(lat).toFixed(4);
             let longText = Math.abs(long).toFixed(4);
             
@@ -198,7 +221,6 @@
         }
 
         function showError(error) {
-            // 简单的错误处理，实际使用时可以更友好
             let msg = "Unknown Error";
             if (error.code === 1) msg = "Permission Denied";
             else if (error.code === 2) msg = "Location Unavailable";
