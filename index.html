@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SENW Design </title>
+    <title>SENW Design</title>
     <style>
         /* --- 基础设置 --- */
         body, html {
             height: 100%;
             margin: 0;
             font-family: "Helvetica", "Arial", sans-serif;
-            /* 背景必须是纯白，作为混合基底 */
             background-color: #ffffff;
             color: #000; 
             overflow: hidden;
@@ -45,14 +44,13 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            /* 修改：层级调低，放在文字下面 */
             z-index: 1; 
             animation: rotateSystem 20s linear infinite;
         }
 
         @keyframes rotateSystem {
             from { transform: rotate(0deg); }
-            to { transform: rotate(180deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* --- 四个方位字母 (S E N W) 的通用样式 --- */
@@ -62,70 +60,76 @@
             font-size: 4rem;
             line-height: 1;
             user-select: none;
-            
-            /* 修改：
-               1. 颜色改为纯黑，保证视觉强度。
-               2. 移除混合模式，因为我们改用文字去混合字母。
-            */
             color: #000000; 
             mix-blend-mode: normal;
-            
             pointer-events: none;
-            transform: translate(-50%, -50%);
-
+            
             /* --- 直线飞行动画设置 --- */
-            animation-duration: 5s;
+            /* 恢复为之前的 5秒往返模式 */
+            animation-duration: 4s;
             animation-timing-function: ease-in-out; 
             animation-iteration-count: infinite; 
-            animation-direction: alternate;
-            animation-delay: 0s;
+            animation-direction: alternate; /* 往返模式 */
+            
+            /* 关键修改：起始停留 2 秒 */
+            animation-delay: 4s; 
+            /* 确保延迟期间保持初始状态 */
+            animation-fill-mode: backwards; 
         }
 
         /* --- 字母位置关键帧 --- */
+        /* 注意：这里恢复了简单的 to {} 写法。
+           初始位置由类本身的 top/left 定义。
+           动画只定义终点。
+        */
+
+        /* N: 正向，初始 top: 35% */
         .letter-up { 
-            top: 50%; 
+            top: 35%; 
             left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
             animation-name: moveN; 
         }
         @keyframes moveN {
-            to { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+            to { top: 5%; left: 50%; transform: translate(-50%, -50%) rotate(0deg); }
         }
 
+        /* S: 旋转180度，初始 top: 65% */
         .letter-down { 
             top: 65%; 
             left: 50%;
+            transform: translate(-50%, -50%) rotate(180deg);
             animation-name: moveS; 
         }
         @keyframes moveS {
-            to { top: 95%; left: 50%; transform: translate(-50%, -50%); }
+            to { top: 95%; left: 50%; transform: translate(-50%, -50%) rotate(180deg); }
         }
 
+        /* W: 逆时针90度，初始 left: 35% */
         .letter-left { 
             top: 50%; 
-            left: 50%;
+            left: 35%;
+            transform: translate(-50%, -50%) rotate(-90deg);
             animation-name: moveW; 
         }
         @keyframes moveW {
-            to { left: 5%; top: 50%; transform: translate(-50%, -50%); }
+            to { left: 5%; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); }
         }
 
+        /* E: 顺时针90度，初始 left: 65% */
         .letter-right { 
             top: 50%; 
             left: 65%;
+            transform: translate(-50%, -50%) rotate(90deg);
             animation-name: moveE; 
         }
         @keyframes moveE {
-            to { left: 95%; top: 50%; transform: translate(-50%, -50%); }
+            to { left: 95%; top: 50%; transform: translate(-50%, -50%) rotate(90deg); }
         }
 
 
         /* --- 中间正文内容样式 --- */
         .main-content {
-            /* 修改：
-               1. 层级调高，放在字母上面。
-               2. 颜色改为白色。
-               3. 开启差值模式。
-            */
             z-index: 10;
             position: relative;
             display: flex;
@@ -133,9 +137,8 @@
             justify-content: center;
             align-items: center;
             max-width: 80%;
-            
             color: #ffffff; /* 白字 */
-            mix-blend-mode: difference; /* 关键：白字 - 白底 = 黑字；白字 - 黑字母 = 白字 */
+            mix-blend-mode: difference; 
         }
 
         .content-section {
@@ -159,7 +162,6 @@
             line-height: 1.6;
         }
 
-        /* 链接也需要改为白色，以便参与混合计算 */
         a {
             color: #ffffff;
             text-decoration: none;
