@@ -160,7 +160,6 @@
             bottom: -20px; /* 向下扩展点击区域 */
             left: -30px; /* 向左扩展点击区域 */
             right: -30px; /* 向右扩展点击区域 */
-            /* background: rgba(255,0,0,0.3); 测试时可以取消注释看红框 */
         }
 
         .about-link:hover {
@@ -176,9 +175,6 @@
                 /* 移动端底部距离微调，确保不贴底 */
                 bottom: calc(20px + env(safe-area-inset-bottom));
             }
-            
-            /* 修改：删除了这里强制 font-size: 3rem !important 的代码 */
-            /* 让 JS 动态计算的大小生效，从而实现 100% 和 75% 的区别 */
         }
     </style>
 </head>
@@ -292,26 +288,27 @@
             const rotationAngle = randomChoice(ROTATION_ANGLES);
             
             // 四个方向的配置：
-            // 每个字都有自己的旋转角度（让字本身转向发射方向）和发射角度
+            // 修改：文字角度 textRotate 统一跟随 rotationAngle
+            // 这样如果是45度发射，文字也倾斜45度，但不会倒立或侧躺
             const directions = [
                 { 
                     angle: -90 + rotationAngle,       // 向上发射
-                    textRotate: 0 + rotationAngle,    // 字正立 + 整体旋转
+                    textRotate: rotationAngle,        // 跟随整体旋转
                     char: characters[0] 
                 },
                 { 
                     angle: 90 + rotationAngle,        // 向下发射
-                    textRotate: 180 + rotationAngle, // 字倒立 + 整体旋转
+                    textRotate: rotationAngle,        // 跟随整体旋转
                     char: characters[1] 
                 },
                 { 
                     angle: 180 + rotationAngle,       // 向左发射
-                    textRotate: -90 + rotationAngle, // 字逆时针90° + 整体旋转
+                    textRotate: rotationAngle,        // 跟随整体旋转
                     char: characters[2] 
                 },
                 { 
                     angle: 0 + rotationAngle,         // 向右发射
-                    textRotate: 90 + rotationAngle,  // 字顺时针90° + 整体旋转
+                    textRotate: rotationAngle,        // 跟随整体旋转
                     char: characters[3] 
                 }
             ];
@@ -340,7 +337,7 @@
                 const uniqueId = Date.now() + Math.random().toString(36).substr(2, 9);
                 const animationName = `fly-${uniqueId}-${index}`;
                 
-                // 关键：每个字根据发射方向独立旋转
+                // 关键：textRotate 现在是 rotationAngle
                 const keyframes = `
                     @keyframes ${animationName} {
                         0% {
