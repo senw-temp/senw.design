@@ -148,6 +148,19 @@
             pointer-events: auto; 
             cursor: pointer;
             line-height: 1;
+            /* 修改：设置为相对定位，为了让伪元素定位 */
+            position: relative;
+        }
+
+        /* 修改：使用伪元素大幅增加点击热区 */
+        .about-link::after {
+            content: '';
+            position: absolute;
+            top: -20px; /* 向上扩展点击区域 */
+            bottom: -20px; /* 向下扩展点击区域 */
+            left: -30px; /* 向左扩展点击区域 */
+            right: -30px; /* 向右扩展点击区域 */
+            /* background: rgba(255,0,0,0.3); 测试时可以取消注释看红框 */
         }
 
         .about-link:hover {
