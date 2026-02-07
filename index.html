@@ -52,7 +52,7 @@
                 0 0 2px currentColor,
                 0 0 4px currentColor,
                 0 0 6px currentColor;
-            animation: flyAndFade 3s ease-out forwards;
+            animation: flyAndFade 4.5s ease-out forwards;
         }
 
         @keyframes flyAndFade {
@@ -217,6 +217,9 @@
         // 音频对象
         let fireworkSound;
         
+        // 点击计数器，用于控制额外文字数量
+        let clickCount = 0;
+        
         function initAudio() {
             if (!fireworkSound) {
                 fireworkSound = new Audio('freesound_community-072007_fireworks-47593.mp3');
@@ -255,6 +258,9 @@
             // 随机选择整体旋转角度：0°、22.5°、45°
             const rotationAngle = randomChoice(ROTATION_ANGLES);
             
+            // 生成唯一ID，避免冲突
+            const uniqueId = Date.now() + Math.random().toString(36).substr(2, 9);
+            
             // 固定四个方向：上(-90°)、下(90°)、左(180°)、右(0°)，加上整体旋转
             const directions = [
                 { angle: -90 + rotationAngle, char: characters[0] },  // 第1个字向上
@@ -282,25 +288,23 @@
                 textEl.style.fontSize = fontSize + 'rem';
                 textEl.style.fontFamily = fontFamily;
                 textEl.style.fontWeight = fontWeight;
-                textEl.style.setProperty('--endX', endX + 'px');
-                textEl.style.setProperty('--endY', endY + 'px');
                 
-                // 添加自定义动画
-                textEl.style.animation = 'none';
-                textEl.offsetHeight; // 强制重绘
+                // 创建唯一的动画名称
+                const animationName = `fly-${uniqueId}-${index}`;
                 
+                // 关键修改：文字本身也要旋转
                 const keyframes = `
-                    @keyframes fly-${Date.now()}-${index} {
+                    @keyframes ${animationName} {
                         0% {
-                            transform: translate(-50%, -50%) scale(0.5);
+                            transform: translate(-50%, -50%) rotate(${rotationAngle}deg) scale(0.5);
                             opacity: 1;
                         }
                         10% {
-                            transform: translate(-50%, -50%) scale(1);
+                            transform: translate(-50%, -50%) rotate(${rotationAngle}deg) scale(1);
                             opacity: 1;
                         }
                         100% {
-                            transform: translate(calc(-50% + ${endX}px), calc(-50% + ${endY}px)) scale(1);
+                            transform: translate(calc(-50% + ${endX}px), calc(-50% + ${endY}px)) rotate(${rotationAngle}deg) scale(1);
                             opacity: 0;
                         }
                     }
@@ -308,17 +312,23 @@
                 
                 const styleSheet = document.createElement('style');
                 styleSheet.textContent = keyframes;
+                styleSheet.setAttribute('data-animation', animationName);
                 document.head.appendChild(styleSheet);
                 
-                textEl.style.animation = `fly-${Date.now()}-${index} 3s ease-out forwards`;
+                // 应用动画
+                textEl.style.animation = `${animationName} 4.5s ease-out forwards`;
                 
                 document.getElementById('text-container').appendChild(textEl);
                 
-                // 3秒后移除元素和样式
+                // 4.5秒后移除元素和样式
                 setTimeout(() => {
-                    textEl.remove();
-                    styleSheet.remove();
-                }, 3500);
+                    if (textEl.parentNode) {
+                        textEl.remove();
+                    }
+                    if (styleSheet.parentNode) {
+                        styleSheet.remove();
+                    }
+                }, 5000);
             });
         }
 
@@ -329,7 +339,25 @@
             
             initAudio();
             playClickSound();
+            
+            // 增加点击计数
+            clickCount++;
+            
+            // 在点击位置创建文字
             createFlyingText(e.clientX, e.clientY);
+            
+            // 计算需要额外出现的文字数量
+            // 第1次: 0个额外, 第2次: 1个额外, 第3次: 2个额外, 第4次: 3个额外, 第5次: 0个额外...
+            const extraCount = (clickCount % 5 === 1) ? 0 : (clickCount - 1) % 5;
+            
+            // 在随机位置创建额外的文字
+            for (let i = 0; i < extraCount; i++) {
+                setTimeout(() => {
+                    const randomX = Math.random() * window.innerWidth;
+                    const randomY = Math.random() * window.innerHeight;
+                    createFlyingText(randomX, randomY);
+                }, i * 50); // 每个额外文字间隔50ms
+            }
         });
 
         // 触摸事件（移动端）
@@ -340,7 +368,24 @@
             const touch = e.touches[0];
             initAudio();
             playClickSound();
+            
+            // 增加点击计数
+            clickCount++;
+            
+            // 在触摸位置创建文字
             createFlyingText(touch.clientX, touch.clientY);
+            
+            // 计算需要额外出现的文字数量
+            const extraCount = (clickCount % 5 === 1) ? 0 : (clickCount - 1) % 5;
+            
+            // 在随机位置创建额外的文字
+            for (let i = 0; i < extraCount; i++) {
+                setTimeout(() => {
+                    const randomX = Math.random() * window.innerWidth;
+                    const randomY = Math.random() * window.innerHeight;
+                    createFlyingText(randomX, randomY);
+                }, i * 50);
+            }
         });
 
         // 欢迎提示（可选）
