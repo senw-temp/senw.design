@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SENW Design</title>
+    <style>
+        /* --- 基础设置 --- */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: "Helvetica", "Arial", sans-serif;
+            background-color: #ffffff;
+            color: #000; 
+            overflow: hidden;
+        }
+
+        /* 最外层的大容器 */
+        .full-screen-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+            background-color: #ffffff;
+        }
+
+        /* --- 核心罗盘容器 --- */
+        .compass-container {
+            position: relative;
+            width: 80vmin; 
+            height: 80vmin;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* --- 字母旋转包裹层 --- */
+        .letters-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1; 
+            animation: rotateSystem 20s linear infinite;
+        }
+
+        @keyframes rotateSystem {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- 四个方位字母 (S E N W) 的通用样式 --- */
+        .compass-letter {
+            position: absolute;
+            font-weight: bold;
+            font-size: 4rem;
+            line-height: 1;
+            user-select: none;
+            color: #000000; 
+            mix-blend-mode: normal;
+            pointer-events: none;
+            
+            /* --- 直线飞行动画设置 --- */
+            animation-duration: 4s;
+            animation-timing-function: ease-in-out; 
+            animation-iteration-count: infinite; 
+            animation-direction: alternate;
+            animation-delay: 4s; 
+            animation-fill-mode: backwards; 
+        }
+
+        /* --- 字母位置关键帧 --- */
+
+        /* N: 正向，初始 top: 35% */
+        .letter-up { 
+            top: 35%; 
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            animation-name: moveN; 
+        }
+        @keyframes moveN {
+            to { top: 5%; left: 50%; transform: translate(-50%, -50%) rotate(0deg); }
+        }
+
+        /* S: 旋转180度，初始 top: 65% */
+        .letter-down { 
+            top: 65%; 
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(180deg);
+            animation-name: moveS; 
+        }
+        @keyframes moveS {
+            to { top: 95%; left: 50%; transform: translate(-50%, -50%) rotate(180deg); }
+        }
+
+        /* W: 逆时针90度，初始 left: 35% */
+        .letter-left { 
+            top: 50%; 
+            left: 35%;
+            transform: translate(-50%, -50%) rotate(-90deg);
+            animation-name: moveW; 
+        }
+        @keyframes moveW {
+            to { left: 5%; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); }
+        }
+
+        /* E: 顺时针90度，初始 left: 65% */
+        .letter-right { 
+            top: 50%; 
+            left: 65%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            animation-name: moveE; 
+        }
+        @keyframes moveE {
+            to { left: 95%; top: 50%; transform: translate(-50%, -50%) rotate(90deg); }
+        }
+
+
+        /* --- 中间正文内容样式 --- */
+        .main-content {
+            z-index: 10;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            max-width: 80%;
+            color: #ffffff; /* 白字 */
+            mix-blend-mode: difference; 
+        }
+
+        .content-section {
+            margin-bottom: 30px;
+        }
+        .content-section:last-child {
+            margin-bottom: 0;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #ffffff;
+            text-decoration: none;
+            border-bottom: 1px solid #ffffff;
+            transition: opacity 0.3s;
+            position: relative;
+            z-index: 5;
+            cursor: pointer;
+        }
+        a:hover {
+            opacity: 0.6;
+        }
+
+        /* --- 返回首页链接样式 --- */
+        .back-home {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="full-screen-wrapper">
+        <div class="compass-container">
+
+            <!-- 字母在下层 (z-index: 1)，黑色 -->
+            <div class="letters-wrapper">
+                <div class="compass-letter letter-up">N</div>
+                <div class="compass-letter letter-down">S</div>
+                <div class="compass-letter letter-left">W</div>
+                <div class="compass-letter letter-right">E</div>
+            </div>
+
+            <!-- 文字在上层 (z-index: 10)，白色 + 差值模式 -->
+            <div class="main-content">
+                <div class="content-section">
+                    <h1>Here you are</h1>
+                    <p id="location-display">Locating...</p>
+                </div>
+
+                <div class="content-section">
+                    <h1>Where are we</h1>
+                    <p><a href="mailto:benberlee@senw.design">benberlee@senw.design</a></p>
+                    <p><a href="mailto:shoupeng.zhu@senw.design">shoupeng.zhu@senw.design</a></p>
+                    <p><a href="mailto:jinbao@senw.design">jinbao@senw.design</a></p>
+                </div>
+
+                <div class="content-section back-home">
+                    <p><a href="index.html">← Back to Home</a></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const displayElement = document.getElementById("location-display");
+        
+        function showPosition(position) {
+            let lat = position.coords.latitude;
+            let long = position.coords.longitude;
+            
+            let latDir = lat >= 0 ? 'N' : 'S';
+            let longDir = long >= 0 ? 'E' : 'W';
+            let latText = Math.abs(lat).toFixed(4);
+            let longText = Math.abs(long).toFixed(4);
+            
+            displayElement.innerHTML = `${longText}° ${longDir}<br>${latText}° ${latDir}`;
+        }
+
+        function showError(error) {
+            let msg = "Unknown Error";
+            if (error.code === 1) msg = "Permission Denied";
+            else if (error.code === 2) msg = "Location Unavailable";
+            else if (error.code === 3) msg = "Request Timeout";
+            
+            displayElement.innerHTML = msg;
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            displayElement.innerHTML = "Geolocation not supported.";
+        }
+    </script>
+
+</body>
+</html>
