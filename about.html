@@ -9,10 +9,13 @@
         body, html {
             height: 100%;
             margin: 0;
+            padding: 0;
             font-family: "Helvetica", "Arial", sans-serif;
             background-color: #ffffff;
             color: #000; 
             overflow: hidden;
+            /* 针对旧版 iOS Safari 的额外修复 */
+            min-height: -webkit-fill-available;
         }
 
         /* 最外层的大容器 */
@@ -20,9 +23,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             width: 100%;
             background-color: #ffffff;
+            /* 核心修复：使用 dvh (Dynamic Viewport Height) 解决 Safari 底部栏遮挡导致的内容偏下问题 */
+            height: 100vh; /* 兼容旧设备 */
+            height: 100dvh; /* 针对现代 iOS Safari */
         }
 
         /* --- 核心罗盘容器 --- */
@@ -201,6 +206,7 @@
                     <p><a href="mailto:benberlee@senw.design">benberlee@senw.design</a></p>
                     <p><a href="mailto:shoupeng.zhu@senw.design">shoupeng.zhu@senw.design</a></p>
                     <p><a href="mailto:jinbao@senw.design">jinbao@senw.design</a></p>
+                    <p><a href="@东南西北 SENW design">jhttps://xhslink.com/m/4sg84SbDqdN</a></p>
                 </div>
 
                 <div class="content-section back-home">
