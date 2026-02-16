@@ -233,8 +233,26 @@
             '金马引路', '福福福福'
         ];
 
+        // 音频对象
+        let fireworkSound;
+        
         // 点击计数器
         let clickCount = 0;
+        
+        function initAudio() {
+            if (!fireworkSound) {
+                fireworkSound = new Audio('freesound_community-072007_fireworks-47593.mp3');
+                fireworkSound.volume = 0.5;
+            }
+        }
+
+        // 播放烟花音效
+        function playClickSound() {
+            initAudio();
+            const sound = fireworkSound.cloneNode();
+            sound.volume = 0.5;
+            sound.play().catch(e => console.log('Audio play failed:', e));
+        }
         
         // ========== 拖动状态追踪 ==========
         let isDragging = false;
@@ -397,6 +415,7 @@
         document.getElementById('clickArea').addEventListener('click', (e) => {
             if (e.target.closest('a')) return;
             
+            playClickSound();
             clickCount++;
             
             createFlyingText(e.clientX, e.clientY);
@@ -423,6 +442,9 @@
             lastFireworkX = touch.clientX;
             lastFireworkY = touch.clientY;
             lastFireworkTime = Date.now();
+            
+            // 播放音效
+            playClickSound();
             
             // 点击计数和额外烟花
             clickCount++;
